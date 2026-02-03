@@ -104,12 +104,6 @@ export default function SignUpPage() {
             <CustomButton
               type="submit"
               isLoading={isPending}
-              onClick={() => {
-                if (!isValid) {
-                  console.log("Validation Errors:", errors);
-                }
-                handleSubmit();
-              }}
               className="mt-6 bg-blue-600 hover:bg-blue-700 font-bold py-3 shadow-md"
             >
               Sign Up

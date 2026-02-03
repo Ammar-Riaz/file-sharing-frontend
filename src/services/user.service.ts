@@ -1,5 +1,5 @@
 import api from "../utils/api";
-import { ApiResponse, SignupValues, User } from "../types/user";
+import { ApiResponse, LoginValues, SignupValues, User } from "../types/user";
 
 /**
  * Service to handle user-related API calls.
@@ -29,5 +29,8 @@ export const UserService = {
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+  login: async (values: LoginValues): Promise<ApiResponse<User>> => {
+    return api.post("/users/login", values);
   },
 };

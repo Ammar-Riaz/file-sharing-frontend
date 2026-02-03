@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Loader2 } from "lucide-react";
 
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -19,7 +20,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition flex items-center justify-center cursor-pointer
         disabled:bg-blue-300 disabled:cursor-not-allowed ${className}`}
     >
-      {isLoading ? "Loading..." : children}
+      {isLoading ? <Loader2 className="animate-spin" /> : children}
     </button>
   );
 };

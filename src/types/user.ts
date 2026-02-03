@@ -24,3 +24,7 @@ export interface SignupValues {
   avatar: File | null;
   coverImage?: File | null;
 }
+export interface LoginValues {
+  email: string;
+  password: string;
+}

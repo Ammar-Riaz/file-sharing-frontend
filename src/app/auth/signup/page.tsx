@@ -6,6 +6,7 @@ import { FormikProvider, useFormik, Form } from "formik";
 import CustomInput from "@/src/components/shared/CustomInput";
 import CustomFileUpload from "@/src/components/shared/CustomFileUpload";
 import CustomButton from "@/src/components/shared/CustomButton";
+import Link from "next/link";
 
 const signupSchema = Yup.object().shape({
   fullName: Yup.string().required("Full Name is required"),
@@ -32,12 +33,11 @@ export default function SignUpPage() {
     },
     validationSchema: signupSchema,
     onSubmit: (values) => {
-      console.log("Form values:", values);
       mutate(values);
     },
   });
 
-  const { errors, touched, getFieldProps, handleSubmit, isValid } = formik;
+  const { errors, touched, getFieldProps } = formik;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -113,12 +113,12 @@ export default function SignUpPage() {
 
         <p className="text-sm text-gray-500 mt-6 text-center">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            href="/auth/login"
             className="text-blue-600 hover:underline font-medium"
           >
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>

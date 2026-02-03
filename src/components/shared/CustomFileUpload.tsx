@@ -39,10 +39,10 @@ const CustomFileUpload: React.FC<CustomFileUploadProps> = ({
   };
 
   return (
-    <div className={`${className}`}>
-      <label className="block mb-1 text-sm font-medium text-gray-700">
+    <div className={`${className} relative py-2`}>
+      <label className="absolute left-3 -top-0.5 px-1 text-xs font-medium text-gray-600 bg-white z-10 transition-all pointer-events-none">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
       <div
         onClick={() => fileInputRef.current?.click()}
@@ -94,9 +94,11 @@ const CustomFileUpload: React.FC<CustomFileUploadProps> = ({
           </div>
         )}
       </div>
-      {meta.touched && meta.error && (
-        <p className="text-red-500 text-xs mt-1">{meta.error}</p>
-      )}
+      <div className="min-h-[1.25rem] mt-1">
+        {meta.touched && meta.error && (
+          <p className="text-red-500 text-xs">{meta.error}</p>
+        )}
+      </div>
     </div>
   );
 };

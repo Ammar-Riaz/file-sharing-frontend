@@ -1,13 +1,14 @@
 "use client";
-import CustomButton from "@/src/components/shared/CustomButton";
+import { useRegisterUser } from "@/src/hooks/use-auth";
+import { SignupValues } from "@/src/types/user";
+import * as Yup from "yup";
+import { FormikProvider, useFormik, Form } from "formik";
 import CustomInput from "@/src/components/shared/CustomInput";
 import CustomFileUpload from "@/src/components/shared/CustomFileUpload";
-import { useState } from "react";
-import { FormikProvider, Form, useFormik } from "formik";
-import * as Yup from "yup";
+import CustomButton from "@/src/components/shared/CustomButton";
 
 const signupSchema = Yup.object().shape({
-  name: Yup.string().required("Full Name is required"),
+  fullName: Yup.string().required("Full Name is required"),
   username: Yup.string()
     .min(3, "Username must be at least 3 characters")
     .required("Username is required"),
@@ -16,52 +17,27 @@ const signupSchema = Yup.object().shape({
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
   avatar: Yup.mixed().required("Avatar is required"),
-  coverImage: Yup.mixed().optional(),
 });
 
-interface SignupValues {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  avatar: File | null;
-  coverImage: File | null;
-}
-
 export default function SignUpPage() {
-  const [error, setError] = useState("");
+  const { mutate, isPending } = useRegisterUser();
 
   const formik = useFormik<SignupValues>({
     initialValues: {
-      name: "",
+      fullName: "",
       username: "",
       email: "",
       password: "",
       avatar: null,
-      coverImage: null,
     },
     validationSchema: signupSchema,
-    onSubmit: (values, { setSubmitting }) => {
-      handleSubmit(values, { setSubmitting });
+    onSubmit: (values) => {
+      console.log("Form values:", values);
+      mutate(values);
     },
   });
 
-  const { errors, touched, getFieldProps, isSubmitting } = formik;
-
-  const handleSubmit = async (
-    values: SignupValues,
-    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
-  ) => {
-    setError("");
-    try {
-      console.log("Form Values:", values);
-      //   await signup(values);
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { errors, touched, getFieldProps, handleSubmit, isValid } = formik;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -70,20 +46,19 @@ export default function SignUpPage() {
           Create Account
         </h2>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mb-6 text-sm text-center">
-            {error}
-          </div>
-        )}
-
         <FormikProvider value={formik}>
-          <Form className="space-y-4">
+          <Form autoComplete="off">
             <CustomInput
               label="Full Name"
               placeholder="Enter your name"
               required
-              {...getFieldProps("name")}
-              error={touched.name && errors.name ? (errors.name as string) : ""}
+              {...getFieldProps("fullName")}
+              autoComplete="name"
+              error={
+                touched.fullName && errors.fullName
+                  ? (errors.fullName as string)
+                  : ""
+              }
             />
 
             <CustomInput
@@ -91,6 +66,7 @@ export default function SignUpPage() {
               placeholder="Choose a username"
               required
               {...getFieldProps("username")}
+              autoComplete="username"
               error={
                 touched.username && errors.username
                   ? (errors.username as string)
@@ -104,6 +80,7 @@ export default function SignUpPage() {
               placeholder="Enter your email"
               required
               {...getFieldProps("email")}
+              autoComplete="email"
               error={
                 touched.email && errors.email ? (errors.email as string) : ""
               }
@@ -115,6 +92,7 @@ export default function SignUpPage() {
               placeholder="Enter your password"
               required
               {...getFieldProps("password")}
+              autoComplete="new-password"
               error={
                 touched.password && errors.password
                   ? (errors.password as string)
@@ -125,8 +103,14 @@ export default function SignUpPage() {
 
             <CustomButton
               type="submit"
-              isLoading={isSubmitting}
-              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition-all duration-300"
+              isLoading={isPending}
+              onClick={() => {
+                if (!isValid) {
+                  console.log("Validation Errors:", errors);
+                }
+                handleSubmit();
+              }}
+              className="mt-6 bg-blue-600 hover:bg-blue-700 font-bold py-3 shadow-md"
             >
               Sign Up
             </CustomButton>
